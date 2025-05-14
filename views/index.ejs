@@ -1,21 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Device Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Tracker with Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <link rel="stylesheet" href="/css/style.css">
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    #login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    }
+
+    form {
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    form h2 {
+      margin-bottom: 20px;
+      color: #1e3a8a;
+    }
+
+    form input, form button {
+      margin: 10px 0;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    form button {
+      background-color: #1d4ed8;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #2563eb;
+    }
+
+    #container {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #top {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      background-color: #e0eaff;
+    }
+
+    #top-left {
+      flex: 1;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #top-left h3 {
+      margin-top: 0;
+      color: #1e40af;
+    }
+
+    #top-right {
+      flex: 2;
+      height: 100%;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid #ccc;
+    }
+
+    #bottom {
+      height: 80px;
+      background-color: #1e3a8a;
+      color: white;
+      padding: 20px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      #top {
+        flex-direction: column;
+      }
+
+      #top-left, #top-right {
+        flex: none;
+        width: 100%;
+      }
+
+      #bottom {
+        font-size: 16px;
+        height: auto;
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="map"></div>
+  <div id="login-container">
+    <form id="login-form" onsubmit="login(event)">
+      <h2>Device Tracker Login</h2>
+      <input type="email" id="email" placeholder="Enter Email" required />
+      <input type="password" id="password" placeholder="Enter Password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <div id="container">
+    <div id="top">
+      <div id="top-left">
+        <h3>User Info</h3>
+        <p><strong>Email:</strong> <span id="user-email"></span></p>
+      </div>
+      <div id="top-right">
+        <div id="map"></div>
+      </div>
+    </div>
+    <div id="bottom">
+      Devices Logged In: <span id="device-count">0</span>
+    </div>
+  </div>
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-
-<script src="/js/script.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/script.js"></script>
 </body>
 </html>
