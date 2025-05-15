@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Device Tracker with Map</title>
+  <title>Device Tracker</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * {
@@ -111,6 +111,22 @@
       letter-spacing: 0.5px;
     }
 
+    #device-list {
+      margin-top: 20px;
+      list-style-type: none;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    #device-list li {
+      margin-bottom: 4px;
+    }
+
+    #logout-btn {
+      margin-top: 10px;
+      background-color: crimson;
+    }
+
     @media (max-width: 768px) {
       #top {
         flex-direction: column;
@@ -144,6 +160,10 @@
       <div id="top-left">
         <h3>User Info</h3>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+
+        <h4 style="margin-top: 20px;">Connected Devices</h4>
+        <ul id="device-list"></ul>
       </div>
       <div id="top-right">
         <div id="map"></div>

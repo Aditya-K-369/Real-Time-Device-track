@@ -10,8 +10,8 @@ const io = socketio(server);
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-const emailToDevices = {}; // { email: [ { socketId, deviceNumber }, ... ] }
-const socketToInfo = {};   // { socketId: { email, deviceNumber } }
+const emailToDevices = {};
+const socketToInfo = {};
 
 io.on("connection", (socket) => {
   socket.on("login", ({ email }) => {
@@ -25,10 +25,14 @@ io.on("connection", (socket) => {
     console.log(`🔌 ${email} logged in as Device ${deviceNumber}`);
   });
 
-  socket.on("send-location", ({ latitude, longitude }) => {
+  socket.on("send-location", ({ email, latitude, longitude }) => {
     const info = socketToInfo[socket.id];
-    if (!info) return;
-    const { email, deviceNumber } = info;
+    if (!info || info.email !== email) {
+      console.warn("🚨 Invalid location attempt");
+      return;
+    }
+
+    const { deviceNumber } = info;
     io.emit("receive-location", { email, deviceNumber, latitude, longitude });
   });
 
@@ -51,6 +55,6 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-server.listen(3000,'0.0.0.0', () => {
+server.listen(3000, '0.0.0.0', () => {
   console.log("✅ Server running on http://localhost:3000");
 });
